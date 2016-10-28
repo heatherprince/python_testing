@@ -31,6 +31,12 @@ class TestFunctions(unittest.TestCase):
         for x in N.linspace(-2,2,11):
             self.assertEqual(p(x), x**2 + 2*x + 3)
 
+    def testCubicPolynomial(self):
+        #my testNewton test for x^3 wasn't close enough to zero so I wanted to check that the implementation in polynomial is fine
+        p = F.Polynomial([1, 0, 0, 0])
+        for x in N.linspace(-2,2,1001):
+            self.assertEqual(p(x), x**3)
+
     def testQuadraticJacobian(self):
         p=F.Polynomial([1,-1,6])    #x^2-x+6 has derivative 2x-1
         for x in N.linspace(-2,2,11):

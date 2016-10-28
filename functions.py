@@ -58,9 +58,15 @@ class Polynomial(object):
         return "Polynomial(%s)" % (", ".join([str(x) for x in self._coeffs]))
 
     def f(self,x):
+        """
+        I updated this to try get my cubic root to be more accurate, it was getting f(x)=0.0 for x~1e-6
         ans = self._coeffs[0]
         for c in self._coeffs[1:]:
             ans = x*ans + c
+        return ans"""
+        ans=0
+        for n, c in enumerate(self._coeffs[::-1]):
+            ans+=c*x**n
         return ans
 
     def __call__(self, x):
