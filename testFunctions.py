@@ -31,6 +31,13 @@ class TestFunctions(unittest.TestCase):
         for x in N.linspace(-2,2,11):
             self.assertEqual(p(x), x**2 + 2*x + 3)
 
+    def testQuadraticJacobian(self):
+        p=F.Polynomial([1,-1,6])    #x^2-x+6 has derivative 2x-1
+        for x in N.linspace(-2,2,11):
+            D=F.ApproximateJacobian(p, x)
+            self.assertEqual(D.shape, (1,1))
+            N.testing.assert_array_almost_equal(D, N.matrix([[2*x-1]]))
+
     def testBivariateQuadratic2D(self):
         q=F.BivariateQuadratic2D([1,2,3,4,5,6],[7,8,9,10,11,12])
         for x in N.linspace(-2,2,11):
