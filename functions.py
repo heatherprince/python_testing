@@ -34,13 +34,29 @@ class BivariateQuadratic2D(object):
     def f(self,xs):
         x=xs.item(0)
         y=xs.item(1)
+
         u = self._coeffs1[0]*x**2 + self._coeffs1[1]*y**2 + self._coeffs1[2]*x + self._coeffs1[3]*y + self._coeffs1[4]*x*y+self._coeffs1[5]
         v = self._coeffs2[0]*x**2 + self._coeffs2[1]*y**2 + self._coeffs2[2]*x + self._coeffs2[3]*y + self._coeffs2[4]*x*y+self._coeffs2[5]
+
         f=N.matrix([[u],[v]])
         return f
 
     def __call__(self, xs):
         return self.f(xs)
+
+    def Jacobian(self, xs):
+        x=xs.item(0)
+        y=xs.item(1)
+
+        dudx= 2*self._coeffs1[0]*x+self._coeffs1[2]+self._coeffs1[4]*y
+        dudy= 2*self._coeffs1[1]*y+self._coeffs1[3]+self._coeffs1[4]*x
+        dvdx= 2*self._coeffs2[0]*x+self._coeffs2[2]+self._coeffs2[4]*y
+        dvdy= 2*self._coeffs2[1]*y+self._coeffs2[3]+self._coeffs2[4]*x
+
+        df=N.matrix([[dudx, dudy], [dvdx, dvdy]])
+
+        return df
+
 
 class Polynomial(object):
     """Callable polynomial object.
@@ -71,3 +87,9 @@ class Polynomial(object):
 
     def __call__(self, x):
         return self.f(x)
+
+    def Jacobian(self, x):
+        ans=0
+        for n, c in enumerate((self._coeffs[::-1])[1:]):
+            ans+=(n+1)*c*x**n
+        return ans

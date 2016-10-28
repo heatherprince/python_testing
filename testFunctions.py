@@ -25,6 +25,14 @@ class TestFunctions(unittest.TestCase):
         self.assertEqual(Df_x.shape, (2,2))
         N.testing.assert_array_almost_equal(Df_x, A)
 
+    """def testApproxJacobianQuadratic(self):
+        f=lambda x: 2*x**2
+        x0 = 3.
+        dx = 1.e-6
+        Df_x = F.ApproximateJacobian(f, x0, dx)
+        self.assertEqual(Df_x.shape, (1,1))
+        self.assertAlmostEqual(Df_x, 4.*x0)"""
+
     def testPolynomial(self):
         # p(x) = x^2 + 2x + 3
         p = F.Polynomial([1, 2, 3])
@@ -34,7 +42,7 @@ class TestFunctions(unittest.TestCase):
     def testCubicPolynomial(self):
         #my testNewton test for x^3 wasn't close enough to zero so I wanted to check that the implementation in polynomial is fine
         p = F.Polynomial([1, 0, 0, 0])
-        for x in N.linspace(-2,2,1001):
+        for x in N.linspace(-2,2,101):
             self.assertEqual(p(x), x**3)
 
     def testQuadraticJacobian(self):
@@ -54,7 +62,7 @@ class TestFunctions(unittest.TestCase):
                 self.assertEqual(fs.item(0), x**2+2*y**2+3*x+4*y+5*x*y+6)
                 self.assertEqual(fs.item(1), 7*x**2+8*y**2+9*x+10*y+11*x*y+12)
 
-    def testBivariateQuadratic2DJacobian(self):
+    def testBivariateQuadratic2DApproxJacobian(self):
         q=F.BivariateQuadratic2D([1,0,0,1,0,1],[0,1,0,0,3,0])
         xs1=N.matrix("5;3")
         xs2=N.matrix("0;0")
@@ -76,6 +84,34 @@ class TestFunctions(unittest.TestCase):
         N.testing.assert_array_almost_equal(D1, J1)
         N.testing.assert_array_almost_equal(D2, J2)
         N.testing.assert_array_almost_equal(D3, J3)
+
+    def testBivariateQuadratic2DExactJacobian(self):
+        q=F.BivariateQuadratic2D([1,0,0,1,0,1],[0,1,0,0,3,0])
+        xs1=N.matrix("5;3")
+        xs2=N.matrix("0;0")
+        xs3=N.matrix("0;1")
+
+        #actual Jacobian at xs1, xs2 calculated analytically by hand
+        J1=N.matrix("10 1; 9 21")
+        J2=N.matrix("0 1; 0 0")
+        J3=N.matrix("0 1; 3 2")
+
+        D1=q.Jacobian(xs1)
+        D2=q.Jacobian(xs2)
+        D3=q.Jacobian(xs3)
+
+        self.assertEqual(D1.shape, (2,2))
+        self.assertEqual(D2.shape, (2,2))
+        self.assertEqual(D3.shape, (2,2))
+
+        N.testing.assert_array_almost_equal(D1, J1)
+        N.testing.assert_array_almost_equal(D2, J2)
+        N.testing.assert_array_almost_equal(D3, J3)
+
+    def testPolynomialExactJacobian(self):
+        p = F.Polynomial([1, 2, 3])
+        for x in N.linspace(-2,2,11):
+            self.assertEqual(p.Jacobian(x), 2*x + 2)
 
 
 
