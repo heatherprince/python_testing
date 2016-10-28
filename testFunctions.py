@@ -31,8 +31,15 @@ class TestFunctions(unittest.TestCase):
         for x in N.linspace(-2,2,11):
             self.assertEqual(p(x), x**2 + 2*x + 3)
 
+    def testBivariateQuadratic(self):
+        q=F.BivariateQuadratic([1,2,3,4,5,6])
+        x=N.linspace(-2,2,11)
+        y=N.linspace(-2,2,11)
+        xs, ys=N.meshgrid(x,y)
+
+        N.testing.assert_array_almost_equal(q(xs,ys), xs**2+2*ys**2+3*xs+4*ys+5*xs*ys+6)
+
+
+
 if __name__ == '__main__':
     unittest.main()
-
-
-

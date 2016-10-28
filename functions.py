@@ -11,8 +11,29 @@ def ApproximateJacobian(f, x, dx=1e-6):
     for i in range(n):
         v = N.matrix(N.zeros((n,1)))
         v[i,0] = dx
-        Df_x[:,i] = (f(x + v) - fx)/dx 
+        Df_x[:,i] = (f(x + v) - fx)/dx
     return Df_x
+
+class BivariateQuadratic(object):
+    """Bivariate quadratic function object
+    coeffs=[a, b, c, d, e, f]
+    the quadratic is ax^2 + by^2 + cx + dy + exy + f
+    initialise an object using q=BivariateQuadratic(coeffs)
+    evaluate using q(x,y)
+
+    """
+    def __init__(self, coeffs):
+        self._coeffs = coeffs
+
+    def __repr__(self):
+        return "Bivariate Quadratic(%s)" % (", ".join([str(x) for x in self._coeffs]))
+
+    def f(self,x, y):
+        ans = self._coeffs[0]*x**2 + self._coeffs[1]*y**2 + self._coeffs[2]*x + self._coeffs[3]*y + self._coeffs[4]*x*y+self._coeffs[5]
+        return ans
+
+    def __call__(self, x, y):
+        return self.f(x, y)
 
 class Polynomial(object):
     """Callable polynomial object.
