@@ -26,6 +26,8 @@ class Newton(object):
             if N.linalg.norm(fx) < self._tol:
                 return x
             x = self.step(x, fx)
+        if self._f(x) > self._tol:
+            raise RuntimeError ("The root was not found within the maximum number of %d iterations" % ( self._maxiter ))
         return x
 
     def step(self, x, fx=None):
@@ -35,4 +37,4 @@ class Newton(object):
             fx = self._f(x)
         Df_x = F.ApproximateJacobian(self._f, x, self._dx)
         h = N.linalg.solve(N.matrix(Df_x), N.matrix(fx))
-        return x + h
+        return x - h
