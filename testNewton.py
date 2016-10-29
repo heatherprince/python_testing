@@ -90,6 +90,19 @@ class TestNewton(unittest.TestCase):
         x_new=solver.step(10.)
         self.assertAlmostEqual(x_new, 5.)
 
+    def testMaxRadius(self):
+        s=F.Sinusoid(1., 3., N.pi/2.)  #cosine, roots at +-pi/2
+        r=N.pi/8.
+        guess=N.pi/4.
+        solver = newton.Newton(s, tol=1.e-15, maxiter=50, Df=s.Jacobian)
+        x=solver.solve(guess)
+        self.assertAlmostEqual(x, N.pi/2)    #check that it reaches within maxiter if no radius imposed
+
+        solver = newton.Newton(s, tol=1.e-15, maxiter=50, Df=s.Jacobian, maxrad=r)  #included max radius
+        self.assertRaises(RuntimeError, solver.solve, guess)   #should not reach solution within maxrad
+
+
+
 
 
 if __name__ == "__main__":
